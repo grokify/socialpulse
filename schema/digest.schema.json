@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/grokify/socialpulse/schema/digest.schema.json",
+  "$defs": {
+    "AggregatedPersona": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "frequency": {
+          "type": "integer"
+        },
+        "typical_stance": {
+          "$ref": "#/$defs/Stance"
+        },
+        "representative_quotes": {
+          "items": {
+            "$ref": "#/$defs/AttributedQuote"
+          },
+          "type": "array"
+        },
+        "common_arguments": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "frequency",
+        "typical_stance",
+        "representative_quotes",
+        "common_arguments"
+      ]
+    },
+    "ArticleReference": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "article_url": {
+          "type": "string"
+        },
+        "discussion_url": {
+          "type": "string"
+        },
+        "platform": {
+          "$ref": "#/$defs/Platform"
+        },
+        "article_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "sentiment": {
+          "$ref": "#/$defs/ArticleSentiment"
+        },
+        "comment_count": {
+          "type": "integer"
+        },
+        "score": {
+          "type": "integer"
+        },
+        "summary_path": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title",
+        "article_url",
+        "discussion_url",
+        "platform",
+        "article_date",
+        "tags",
+        "sentiment",
+        "comment_count"
+      ]
+    },
+    "ArticleSentiment": {
+      "type": "string",
+      "enum": [
+        "optimistic",
+        "cautious",
+        "pessimistic",
+        "neutral",
+        "provocative"
+      ],
+      "description": "Overall tone of the article"
+    },
+    "AttributedQuote": {
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "platform": {
+          "$ref": "#/$defs/Platform"
+        },
+        "article_title": {
+          "type": "string"
+        },
+        "discussion_url": {
+          "type": "string"
+        },
+        "significance": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "text",
+        "author",
+        "platform",
+        "article_title",
+        "discussion_url"
+      ]
+    },
+    "DigestMeta": {
+      "properties": {
+        "period": {
+          "$ref": "#/$defs/DigestPeriod"
+        },
+        "period_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "period_end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "generated_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "article_count": {
+          "type": "integer"
+        },
+        "total_comments": {
+          "type": "integer"
+        },
+        "platforms": {
+          "items": {
+            "$ref": "#/$defs/Platform"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "period",
+        "period_start",
+        "period_end",
+        "generated_date",
+        "article_count",
+        "total_comments",
+        "platforms"
+      ]
+    },
+    "DigestPeriod": {
+      "type": "string",
+      "enum": [
+        "weekly",
+        "monthly",
+        "quarterly"
+      ],
+      "description": "Time period covered by the digest"
+    },
+    "Platform": {
+      "type": "string",
+      "enum": [
+        "hackernews",
+        "reddit"
+      ],
+      "description": "Source platform for the discussion"
+    },
+    "SentimentDistribution": {
+      "properties": {
+        "optimistic": {
+          "type": "integer"
+        },
+        "cautious": {
+          "type": "integer"
+        },
+        "pessimistic": {
+          "type": "integer"
+        },
+        "neutral": {
+          "type": "integer"
+        },
+        "provocative": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "optimistic",
+        "cautious",
+        "pessimistic",
+        "neutral",
+        "provocative"
+      ]
+    },
+    "Stance": {
+      "type": "string",
+      "enum": [
+        "agrees",
+        "disagrees",
+        "nuanced",
+        "tangential"
+      ],
+      "description": "How a persona relates to the article's thesis"
+    },
+    "TagCount": {
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "tag",
+        "count"
+      ]
+    },
+    "TopicTrend": {
+      "properties": {
+        "topic": {
+          "type": "string"
+        },
+        "occurrences": {
+          "type": "integer"
+        },
+        "context": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "topic",
+        "occurrences"
+      ]
+    },
+    "Trends": {
+      "properties": {
+        "top_tags": {
+          "items": {
+            "$ref": "#/$defs/TagCount"
+          },
+          "type": "array"
+        },
+        "article_sentiment_distribution": {
+          "$ref": "#/$defs/SentimentDistribution"
+        },
+        "discussion_sentiment_distribution": {
+          "$ref": "#/$defs/SentimentDistribution"
+        },
+        "emerging_topics": {
+          "items": {
+            "$ref": "#/$defs/TopicTrend"
+          },
+          "type": "array"
+        },
+        "key_themes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "narrative_summary": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "top_tags",
+        "article_sentiment_distribution",
+        "discussion_sentiment_distribution",
+        "key_themes",
+        "narrative_summary"
+      ]
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "meta": {
+      "$ref": "#/$defs/DigestMeta"
+    },
+    "trends": {
+      "$ref": "#/$defs/Trends"
+    },
+    "personas": {
+      "items": {
+        "$ref": "#/$defs/AggregatedPersona"
+      },
+      "type": "array"
+    },
+    "top_articles": {
+      "items": {
+        "$ref": "#/$defs/ArticleReference"
+      },
+      "type": "array"
+    },
+    "notable_quotes": {
+      "items": {
+        "$ref": "#/$defs/AttributedQuote"
+      },
+      "type": "array"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "schema_version",
+    "meta",
+    "trends",
+    "personas",
+    "top_articles"
+  ],
+  "title": "SocialPulse Digest",
+  "description": "An aggregated summary of articles over a time period"
+}

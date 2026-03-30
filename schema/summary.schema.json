@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/grokify/socialpulse/schema/summary.schema.json",
+  "$defs": {
+    "Article": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "thesis": {
+          "type": "string"
+        },
+        "key_arguments": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "examples": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "prescription": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "sentiment": {
+          "$ref": "#/$defs/ArticleSentiment"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title",
+        "thesis",
+        "key_arguments",
+        "tags",
+        "sentiment"
+      ]
+    },
+    "ArticleSentiment": {
+      "type": "string",
+      "enum": [
+        "optimistic",
+        "cautious",
+        "pessimistic",
+        "neutral",
+        "provocative"
+      ],
+      "description": "Overall tone of the article"
+    },
+    "Discussion": {
+      "properties": {
+        "sentiment": {
+          "$ref": "#/$defs/DiscussionSentiment"
+        },
+        "personas": {
+          "items": {
+            "$ref": "#/$defs/Persona"
+          },
+          "type": "array"
+        },
+        "tangents": {
+          "items": {
+            "$ref": "#/$defs/Tangent"
+          },
+          "type": "array"
+        },
+        "consensus_points": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "open_questions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "sentiment",
+        "personas"
+      ]
+    },
+    "DiscussionSentiment": {
+      "type": "string",
+      "enum": [
+        "supportive",
+        "divided",
+        "critical",
+        "exploratory"
+      ],
+      "description": "Overall tone of the discussion"
+    },
+    "Meta": {
+      "properties": {
+        "article_url": {
+          "type": "string"
+        },
+        "discussion_url": {
+          "type": "string"
+        },
+        "platform": {
+          "$ref": "#/$defs/Platform"
+        },
+        "article_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "summary_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "article_author": {
+          "type": "string"
+        },
+        "discussion_comment_count": {
+          "type": "integer"
+        },
+        "item_id": {
+          "type": "string"
+        },
+        "subreddit": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "article_url",
+        "discussion_url",
+        "platform",
+        "article_date",
+        "summary_date",
+        "article_author",
+        "discussion_comment_count"
+      ]
+    },
+    "Persona": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "stance": {
+          "$ref": "#/$defs/Stance"
+        },
+        "prevalence": {
+          "$ref": "#/$defs/Prevalence"
+        },
+        "quotes": {
+          "items": {
+            "$ref": "#/$defs/Quote"
+          },
+          "type": "array"
+        },
+        "core_argument": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "stance",
+        "prevalence",
+        "quotes",
+        "core_argument"
+      ]
+    },
+    "Platform": {
+      "type": "string",
+      "enum": [
+        "hackernews",
+        "reddit"
+      ],
+      "description": "Source platform for the discussion"
+    },
+    "Prevalence": {
+      "type": "string",
+      "enum": [
+        "dominant",
+        "significant",
+        "minority"
+      ],
+      "description": "How common a viewpoint is in the discussion"
+    },
+    "Quote": {
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "context": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "text",
+        "author"
+      ]
+    },
+    "Stance": {
+      "type": "string",
+      "enum": [
+        "agrees",
+        "disagrees",
+        "nuanced",
+        "tangential"
+      ],
+      "description": "How a persona relates to the article's thesis"
+    },
+    "Tangent": {
+      "properties": {
+        "topic": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "topic",
+        "summary"
+      ]
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    },
+    "article": {
+      "$ref": "#/$defs/Article"
+    },
+    "discussion": {
+      "$ref": "#/$defs/Discussion"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "schema_version",
+    "meta",
+    "article",
+    "discussion"
+  ],
+  "title": "SocialPulse Summary",
+  "description": "A structured summary of a blog article and its social discussion"
+}

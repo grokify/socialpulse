@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/grokify/socialpulse/schema/source-links.schema.json",
+  "$defs": {
+    "Platform": {
+      "type": "string",
+      "enum": [
+        "hackernews",
+        "reddit"
+      ],
+      "description": "Source platform for the discussion"
+    },
+    "SourceLink": {
+      "properties": {
+        "article_url": {
+          "type": "string"
+        },
+        "discussion_url": {
+          "type": "string"
+        },
+        "platform": {
+          "$ref": "#/$defs/Platform"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "added_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "processed": {
+          "type": "boolean"
+        },
+        "summary_path": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "article_url",
+        "discussion_url",
+        "platform",
+        "added_date",
+        "processed"
+      ]
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "links": {
+      "items": {
+        "$ref": "#/$defs/SourceLink"
+      },
+      "type": "array"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "schema_version",
+    "links"
+  ],
+  "title": "SocialPulse Source Links",
+  "description": "Collection of article links to be summarized"
+}

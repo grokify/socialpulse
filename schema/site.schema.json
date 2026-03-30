@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/grokify/socialpulse/schema/site.schema.json",
+  "$defs": {
+    "ArticleReference": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "article_url": {
+          "type": "string"
+        },
+        "discussion_url": {
+          "type": "string"
+        },
+        "platform": {
+          "$ref": "#/$defs/Platform"
+        },
+        "article_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "sentiment": {
+          "$ref": "#/$defs/ArticleSentiment"
+        },
+        "comment_count": {
+          "type": "integer"
+        },
+        "score": {
+          "type": "integer"
+        },
+        "summary_path": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title",
+        "article_url",
+        "discussion_url",
+        "platform",
+        "article_date",
+        "tags",
+        "sentiment",
+        "comment_count"
+      ]
+    },
+    "ArticleSentiment": {
+      "type": "string",
+      "enum": [
+        "optimistic",
+        "cautious",
+        "pessimistic",
+        "neutral",
+        "provocative"
+      ],
+      "description": "Overall tone of the article"
+    },
+    "DigestPeriod": {
+      "type": "string",
+      "enum": [
+        "weekly",
+        "monthly",
+        "quarterly"
+      ],
+      "description": "Time period covered by the digest"
+    },
+    "DigestReference": {
+      "properties": {
+        "period": {
+          "$ref": "#/$defs/DigestPeriod"
+        },
+        "period_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "period_end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "digest_path": {
+          "type": "string"
+        },
+        "article_count": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "period",
+        "period_start",
+        "period_end",
+        "digest_path",
+        "article_count"
+      ]
+    },
+    "Platform": {
+      "type": "string",
+      "enum": [
+        "hackernews",
+        "reddit"
+      ],
+      "description": "Source platform for the discussion"
+    },
+    "SiteMeta": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "base_url": {
+          "type": "string"
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "article_count": {
+          "type": "integer"
+        },
+        "platforms": {
+          "items": {
+            "$ref": "#/$defs/Platform"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "title",
+        "description",
+        "base_url",
+        "last_updated",
+        "article_count",
+        "platforms"
+      ]
+    },
+    "TagIndex": {
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer"
+        },
+        "articles": {
+          "items": {
+            "$ref": "#/$defs/ArticleReference"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "tag",
+        "count",
+        "articles"
+      ]
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "meta": {
+      "$ref": "#/$defs/SiteMeta"
+    },
+    "articles": {
+      "items": {
+        "$ref": "#/$defs/ArticleReference"
+      },
+      "type": "array"
+    },
+    "digests": {
+      "items": {
+        "$ref": "#/$defs/DigestReference"
+      },
+      "type": "array"
+    },
+    "tag_index": {
+      "items": {
+        "$ref": "#/$defs/TagIndex"
+      },
+      "type": "array"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "schema_version",
+    "meta",
+    "articles"
+  ],
+  "title": "SocialPulse Site",
+  "description": "Site configuration and article index"
+}
