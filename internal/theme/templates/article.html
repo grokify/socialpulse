@@ -1,0 +1,186 @@
+{{define "article.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} | {{.SiteTitle}}</title>
+    <meta name="description" content="{{.SiteDescription}}">
+    <link rel="stylesheet" href="{{.BaseURL}}/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <a href="{{.BaseURL}}/" class="site-title">{{.SiteTitle}}</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{.BaseURL}}/">Dashboard</a></li>
+            <li><a href="{{.BaseURL}}/#articles">Articles</a></li>
+            <li><a href="{{.BaseURL}}/#digests">Digests</a></li>
+            <li><a href="{{.BaseURL}}/#tags">Tags</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+<article class="article-detail">
+    <!-- Header -->
+    <header class="article-header">
+        <div class="article-meta">
+            <span class="platform-badge {{lower (printf "%s" .Summary.Meta.Platform)}}">{{platformIcon .Summary.Meta.Platform}}</span>
+            <span class="date">{{formatDate .Summary.Meta.ArticleDate}}</span>
+            <span class="author">by {{.Summary.Meta.ArticleAuthor}}</span>
+            <span class="comments">{{.Summary.Meta.DiscussionCommentCount}} comments</span>
+        </div>
+        <h1>{{.Summary.Article.Title}}</h1>
+        <div class="article-badges">
+            <span class="badge {{sentimentClass .Summary.Article.Sentiment}}">{{.Summary.Article.Sentiment}}</span>
+            <span class="badge discussion-{{lower (printf "%s" .Summary.Discussion.Sentiment)}}">Discussion: {{.Summary.Discussion.Sentiment}}</span>
+        </div>
+        <div class="source-links">
+            <a href="{{.Summary.Meta.ArticleURL}}" target="_blank" rel="noopener" class="source-link">Original Article</a>
+            <a href="{{.Summary.Meta.DiscussionURL}}" target="_blank" rel="noopener" class="source-link">Discussion</a>
+        </div>
+    </header>
+
+    <div class="article-body">
+        <!-- Thesis -->
+        <section class="thesis-box">
+            <h2>Thesis</h2>
+            <blockquote>{{.Summary.Article.Thesis}}</blockquote>
+        </section>
+
+        <!-- Key Arguments -->
+        <section class="key-arguments">
+            <h2>Key Arguments</h2>
+            <ol class="arguments-list">
+                {{range .Summary.Article.KeyArguments}}
+                <li>{{.}}</li>
+                {{end}}
+            </ol>
+        </section>
+
+        {{if .Summary.Article.Examples}}
+        <!-- Examples -->
+        <section class="examples">
+            <h2>Examples Cited</h2>
+            <ul>
+                {{range .Summary.Article.Examples}}
+                <li>{{.}}</li>
+                {{end}}
+            </ul>
+        </section>
+        {{end}}
+
+        {{if .Summary.Article.Prescription}}
+        <!-- Prescription -->
+        <section class="prescription">
+            <h2>Call to Action</h2>
+            <p>{{.Summary.Article.Prescription}}</p>
+        </section>
+        {{end}}
+
+        <!-- Personas -->
+        <section class="personas">
+            <h2>Discussion Personas</h2>
+            <div class="persona-chart-container">
+                <div id="persona-donut-chart" style="width: 100%; height: 320px;"></div>
+            </div>
+            <script id="persona-data" type="application/json">
+[{{range $i, $p := .Summary.Discussion.Personas}}{{if $i}},{{end}}{"name":"{{$p.Name}}","percentage":{{$p.Percentage}},"stance":"{{$p.Stance}}","prevalence":"{{$p.Prevalence}}"}{{end}}]
+            </script>
+            <div class="persona-grid">
+                {{range .Summary.Discussion.Personas}}
+                <div class="persona-card {{stanceClass .Stance}} {{prevalenceClass .Prevalence}}">
+                    <div class="persona-header">
+                        <h3>{{.Name}}{{if .Percentage}} <span class="persona-percentage">{{.Percentage}}%</span>{{end}}</h3>
+                        <div class="persona-badges">
+                            <span class="badge {{stanceClass .Stance}}">{{.Stance}}</span>
+                            <span class="badge {{prevalenceClass .Prevalence}}">{{.Prevalence}}</span>
+                        </div>
+                    </div>
+                    <p class="persona-description">{{.Description}}</p>
+                    <p class="core-argument"><strong>Core argument:</strong> {{.CoreArgument}}</p>
+                    {{if .Quotes}}
+                    <div class="quotes">
+                        <h4>Quotes</h4>
+                        {{range .Quotes}}
+                        <blockquote class="quote">
+                            <p>"{{.Text}}"</p>
+                            <cite>— {{.Author}}{{if .Context}} ({{.Context}}){{end}}</cite>
+                        </blockquote>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+        </section>
+
+        <!-- Sidebar content as sections -->
+        <div class="article-sidebar-content">
+            <!-- Tags -->
+            <section class="tags-section">
+                <h2>Tags</h2>
+                <div class="tags">
+                    {{range .Summary.Article.Tags}}
+                    <a href="{{$.BaseURL}}/tags/{{slugify .}}.html" class="tag">{{.}}</a>
+                    {{end}}
+                </div>
+            </section>
+
+            {{if .Summary.Discussion.Tangents}}
+            <!-- Tangents -->
+            <section class="tangents">
+                <h2>Tangents</h2>
+                <ul>
+                    {{range .Summary.Discussion.Tangents}}
+                    <li>
+                        <strong>{{.Topic}}</strong>
+                        <p>{{.Summary}}</p>
+                    </li>
+                    {{end}}
+                </ul>
+            </section>
+            {{end}}
+
+            {{if .Summary.Discussion.ConsensusPoints}}
+            <!-- Consensus Points -->
+            <section class="consensus">
+                <h2>Consensus Points</h2>
+                <ul>
+                    {{range .Summary.Discussion.ConsensusPoints}}
+                    <li>{{.}}</li>
+                    {{end}}
+                </ul>
+            </section>
+            {{end}}
+
+            {{if .Summary.Discussion.OpenQuestions}}
+            <!-- Open Questions -->
+            <section class="open-questions">
+                <h2>Open Questions</h2>
+                <ul>
+                    {{range .Summary.Discussion.OpenQuestions}}
+                    <li>{{.}}</li>
+                    {{end}}
+                </ul>
+            </section>
+            {{end}}
+        </div>
+    </div>
+
+    <nav class="article-nav">
+        <a href="{{.BaseURL}}/" class="back-link">Back to Dashboard</a>
+    </nav>
+</article>
+    </main>
+
+    <footer class="footer">
+        <p>Generated by <a href="https://github.com/grokify/socialpulse">SocialPulse</a> on {{formatDateTime .GeneratedAt}}</p>
+    </footer>
+
+    <script src="{{.BaseURL}}/js/charts.js"></script>
+</body>
+</html>
+{{end}}

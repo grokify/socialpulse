@@ -1,0 +1,250 @@
+{{define "digest.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} | {{.SiteTitle}}</title>
+    <meta name="description" content="{{.SiteDescription}}">
+    <link rel="stylesheet" href="{{.BaseURL}}/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <a href="{{.BaseURL}}/" class="site-title">{{.SiteTitle}}</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{.BaseURL}}/">Dashboard</a></li>
+            <li><a href="{{.BaseURL}}/#articles">Articles</a></li>
+            <li><a href="{{.BaseURL}}/#digests">Digests</a></li>
+            <li><a href="{{.BaseURL}}/#tags">Tags</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+<article class="digest-detail">
+    <!-- Header -->
+    <header class="digest-header">
+        <span class="period-badge large">{{title (printf "%s" .Digest.Meta.Period)}} Digest</span>
+        <h1>{{formatDate .Digest.Meta.PeriodStart}} - {{formatDate .Digest.Meta.PeriodEnd}}</h1>
+        <div class="digest-stats">
+            <span class="stat">{{.Digest.Meta.ArticleCount}} articles</span>
+            <span class="stat">{{.Digest.Meta.TotalComments}} comments</span>
+            <span class="stat">{{len .Digest.Meta.Platforms}} platforms</span>
+        </div>
+    </header>
+
+    <div class="digest-body">
+        <!-- Narrative Summary -->
+        <section class="narrative">
+            <h2>Summary</h2>
+            <p>{{.Digest.Trends.NarrativeSummary}}</p>
+        </section>
+
+        <!-- Key Themes -->
+        {{if .Digest.Trends.KeyThemes}}
+        <section class="key-themes">
+            <h2>Key Themes</h2>
+            <ul>
+                {{range .Digest.Trends.KeyThemes}}
+                <li>{{.}}</li>
+                {{end}}
+            </ul>
+        </section>
+        {{end}}
+
+        <!-- Sentiment Distribution -->
+        <section class="sentiment-charts">
+            <h2>Sentiment Analysis</h2>
+            <div class="chart-grid">
+                <div class="chart-section donut-section">
+                    <h3>Article Sentiments</h3>
+                    <div id="sentiment-donut-chart" style="width: 100%; height: 280px;"></div>
+                    <script id="sentiment-data" type="application/json">
+                    {{with .Digest.Trends.ArticleSentimentDistribution}}{"optimistic":{{.Optimistic}},"cautious":{{.Cautious}},"pessimistic":{{.Pessimistic}},"neutral":{{.Neutral}},"provocative":{{.Provocative}}}{{end}}
+                    </script>
+                </div>
+                <div class="chart-section bars-section">
+                    <h3>Distribution</h3>
+                    <div class="sentiment-bars">
+                        {{with .Digest.Trends.ArticleSentimentDistribution}}
+                        <div class="sentiment-bar-row">
+                            <span class="sentiment-label">Optimistic</span>
+                            <div class="bar-container">
+                                <div class="bar optimistic" style="width: {{mul .Optimistic 15}}%"></div>
+                            </div>
+                            <span class="sentiment-count">{{.Optimistic}}</span>
+                        </div>
+                        <div class="sentiment-bar-row">
+                            <span class="sentiment-label">Cautious</span>
+                            <div class="bar-container">
+                                <div class="bar cautious" style="width: {{mul .Cautious 15}}%"></div>
+                            </div>
+                            <span class="sentiment-count">{{.Cautious}}</span>
+                        </div>
+                        <div class="sentiment-bar-row">
+                            <span class="sentiment-label">Pessimistic</span>
+                            <div class="bar-container">
+                                <div class="bar pessimistic" style="width: {{mul .Pessimistic 15}}%"></div>
+                            </div>
+                            <span class="sentiment-count">{{.Pessimistic}}</span>
+                        </div>
+                        <div class="sentiment-bar-row">
+                            <span class="sentiment-label">Neutral</span>
+                            <div class="bar-container">
+                                <div class="bar neutral" style="width: {{mul .Neutral 15}}%"></div>
+                            </div>
+                            <span class="sentiment-count">{{.Neutral}}</span>
+                        </div>
+                        <div class="sentiment-bar-row">
+                            <span class="sentiment-label">Provocative</span>
+                            <div class="bar-container">
+                                <div class="bar provocative" style="width: {{mul .Provocative 15}}%"></div>
+                            </div>
+                            <span class="sentiment-count">{{.Provocative}}</span>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Tags -->
+        {{if .Digest.Trends.TopTags}}
+        <section class="top-tags">
+            <h2>Top Tags</h2>
+            <div class="tag-bars">
+                {{range .Digest.Trends.TopTags}}
+                <div class="tag-bar-row">
+                    <a href="{{$.BaseURL}}/tags/{{slugify .Tag}}.html" class="tag-label">{{.Tag}}</a>
+                    <div class="bar-container">
+                        <div class="bar tag-bar" style="width: {{mul .Count 20}}%"></div>
+                    </div>
+                    <span class="tag-count">{{.Count}}</span>
+                </div>
+                {{end}}
+            </div>
+        </section>
+        {{end}}
+
+        <!-- Emerging Topics -->
+        {{if .Digest.Trends.EmergingTopics}}
+        <section class="emerging-topics">
+            <h2>Emerging Topics</h2>
+            <div class="topics-list">
+                {{range .Digest.Trends.EmergingTopics}}
+                <div class="topic-item">
+                    <span class="topic-name">{{.Topic}}</span>
+                    <span class="topic-occurrences">{{.Occurrences}} mentions</span>
+                    {{if .Context}}
+                    <p class="topic-context">{{.Context}}</p>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+        </section>
+        {{end}}
+
+        <!-- Aggregated Personas -->
+        {{if .Digest.Personas}}
+        <section class="aggregated-personas">
+            <h2>Common Personas</h2>
+            <div class="persona-grid">
+                {{range .Digest.Personas}}
+                <div class="persona-card aggregated {{stanceClass .TypicalStance}}">
+                    <div class="persona-header">
+                        <h3>{{.Name}}</h3>
+                        <span class="frequency">Appeared {{.Frequency}} times</span>
+                    </div>
+                    <p class="persona-description">{{.Description}}</p>
+                    <div class="persona-badges">
+                        <span class="badge {{stanceClass .TypicalStance}}">Usually {{.TypicalStance}}</span>
+                    </div>
+                    {{if .CommonArguments}}
+                    <div class="common-arguments">
+                        <h4>Common Arguments</h4>
+                        <ul>
+                            {{range .CommonArguments}}
+                            <li>{{.}}</li>
+                            {{end}}
+                        </ul>
+                    </div>
+                    {{end}}
+                    {{if .RepresentativeQuotes}}
+                    <div class="quotes">
+                        <h4>Representative Quotes</h4>
+                        {{range .RepresentativeQuotes}}
+                        <blockquote class="quote">
+                            <p>"{{.Text}}"</p>
+                            <cite>— {{.Author}} on <a href="{{.DiscussionURL}}" target="_blank">{{.ArticleTitle}}</a></cite>
+                        </blockquote>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+        </section>
+        {{end}}
+
+        <!-- Top Articles -->
+        {{if .Digest.TopArticles}}
+        <section class="top-articles">
+            <h2>Top Articles</h2>
+            <div class="article-list compact">
+                {{range .Digest.TopArticles}}
+                <a href="{{$.BaseURL}}/articles/{{slugify .Title}}.html" class="article-card compact">
+                    <div class="article-meta">
+                        <span class="platform-badge {{lower (printf "%s" .Platform)}}">{{platformIcon .Platform}}</span>
+                        <span class="date">{{formatDate .ArticleDate}}</span>
+                        <span class="badge {{sentimentClass .Sentiment}}">{{.Sentiment}}</span>
+                    </div>
+                    <h3 class="article-title">{{.Title}}</h3>
+                    <div class="article-stats">
+                        <span class="stat">{{.CommentCount}} comments</span>
+                        {{if .Score}}<span class="stat">{{.Score}} points</span>{{end}}
+                    </div>
+                </a>
+                {{end}}
+            </div>
+        </section>
+        {{end}}
+
+        <!-- Notable Quotes -->
+        {{if .Digest.NotableQuotes}}
+        <section class="notable-quotes">
+            <h2>Notable Quotes</h2>
+            <div class="quotes-grid">
+                {{range .Digest.NotableQuotes}}
+                <blockquote class="quote featured">
+                    <p>"{{.Text}}"</p>
+                    <cite>
+                        — {{.Author}}
+                        <span class="platform-badge {{lower (printf "%s" .Platform)}}">{{platformIcon .Platform}}</span>
+                        on <a href="{{.DiscussionURL}}" target="_blank">{{.ArticleTitle}}</a>
+                    </cite>
+                    {{if .Significance}}
+                    <p class="significance">{{.Significance}}</p>
+                    {{end}}
+                </blockquote>
+                {{end}}
+            </div>
+        </section>
+        {{end}}
+    </div>
+
+    <nav class="article-nav">
+        <a href="{{.BaseURL}}/" class="back-link">Back to Dashboard</a>
+    </nav>
+</article>
+    </main>
+
+    <footer class="footer">
+        <p>Generated by <a href="https://github.com/grokify/socialpulse">SocialPulse</a> on {{formatDateTime .GeneratedAt}}</p>
+    </footer>
+
+    <script src="{{.BaseURL}}/js/charts.js"></script>
+</body>
+</html>
+{{end}}

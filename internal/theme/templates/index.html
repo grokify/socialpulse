@@ -1,0 +1,167 @@
+{{define "index.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} | {{.SiteTitle}}</title>
+    <meta name="description" content="{{.SiteDescription}}">
+    <link rel="stylesheet" href="{{.BaseURL}}/css/dashboard.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <a href="{{.BaseURL}}/" class="site-title">{{.SiteTitle}}</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{.BaseURL}}/">Dashboard</a></li>
+            <li><a href="{{.BaseURL}}/#articles">Articles</a></li>
+            <li><a href="{{.BaseURL}}/#digests">Digests</a></li>
+            <li><a href="{{.BaseURL}}/#tags">Tags</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+<div class="dashboard">
+    <header class="dashboard-header">
+        <h1>{{.SiteTitle}}</h1>
+        <p class="site-description">{{.SiteDescription}}</p>
+    </header>
+
+    <!-- Metrics Bar -->
+    <section class="metrics-bar">
+        <div class="metric">
+            <span class="metric-value">{{.TotalStats.TotalArticles}}</span>
+            <span class="metric-label">Articles</span>
+        </div>
+        <div class="metric">
+            <span class="metric-value">{{.TotalStats.TotalComments}}</span>
+            <span class="metric-label">Comments</span>
+        </div>
+        <div class="metric">
+            <span class="metric-value">{{len .TotalStats.Platforms}}</span>
+            <span class="metric-label">Platforms</span>
+        </div>
+        <div class="metric">
+            <span class="metric-value date-range">{{.TotalStats.DateRange}}</span>
+            <span class="metric-label">Date Range</span>
+        </div>
+    </section>
+
+    <div class="dashboard-grid">
+        <!-- Recent Articles -->
+        <section class="card recent-articles" id="articles">
+            <h2>Recent Articles</h2>
+            <div class="article-list">
+                {{range $i, $article := .Articles}}
+                {{if lt $i $.RecentCount}}
+                <a href="{{$.BaseURL}}/articles/{{articleSlug $article}}.html" class="article-card">
+                    <div class="article-meta">
+                        <span class="platform-badge {{lower (printf "%s" $article.Meta.Platform)}}">{{platformIcon $article.Meta.Platform}}</span>
+                        <span class="date">{{formatDate $article.Meta.ArticleDate}}</span>
+                        <span class="badge {{sentimentClass $article.Article.Sentiment}}">{{$article.Article.Sentiment}}</span>
+                    </div>
+                    <h3 class="article-title">{{$article.Article.Title}}</h3>
+                    <p class="article-summary">{{truncate $article.Article.Thesis 140}}</p>
+                    <div class="article-stats">
+                        <span class="stat">{{len $article.Discussion.Personas}} personas</span>
+                        <span class="stat">{{$article.Meta.DiscussionCommentCount}} comments</span>
+                    </div>
+                    <div class="article-tags">
+                        {{range $article.Article.Tags}}
+                        <span class="tag">{{.}}</span>
+                        {{end}}
+                    </div>
+                </a>
+                {{end}}
+                {{end}}
+            </div>
+            {{if gt (len .Articles) .RecentCount}}
+            <p class="view-all"><a href="{{.BaseURL}}/#all-articles">View all {{len .Articles}} articles</a></p>
+            {{end}}
+        </section>
+
+        <!-- Tag Cloud -->
+        <section class="card tag-cloud-section" id="tags">
+            <h2>Topics</h2>
+            <div class="tag-cloud">
+                {{range .TagCloud}}
+                <a href="{{$.BaseURL}}/tags/{{slugify .Tag}}.html" class="cloud-tag weight-{{.Weight}}">
+                    {{.Tag}} <span class="count">({{.Count}})</span>
+                </a>
+                {{end}}
+            </div>
+        </section>
+
+        <!-- Sentiment Breakdown -->
+        <section class="card sentiment-chart">
+            <h2>Sentiment Distribution</h2>
+            <div class="sentiment-bars">
+                {{range $sentiment, $count := .TotalStats.SentimentBreakdown}}
+                <div class="sentiment-bar-row">
+                    <span class="sentiment-label">{{title $sentiment}}</span>
+                    <div class="bar-container">
+                        <div class="bar {{$sentiment}}" style="width: {{mul (div $count $.TotalStats.TotalArticles) 100}}%"></div>
+                    </div>
+                    <span class="sentiment-count">{{$count}}</span>
+                </div>
+                {{end}}
+            </div>
+        </section>
+
+        <!-- Digests -->
+        {{if .Digests}}
+        <section class="card digests-section" id="digests">
+            <h2>Digests</h2>
+            <div class="digest-list">
+                {{range .Digests}}
+                <a href="{{$.BaseURL}}/digests/{{lower (printf "%s" .Meta.Period)}}-{{.Meta.PeriodStart.Format "2006-01-02"}}.html" class="digest-card">
+                    <span class="period-badge">{{title (printf "%s" .Meta.Period)}}</span>
+                    <span class="period-dates">{{formatDate .Meta.PeriodStart}} - {{formatDate .Meta.PeriodEnd}}</span>
+                    <span class="article-count">{{.Meta.ArticleCount}} articles</span>
+                </a>
+                {{end}}
+            </div>
+        </section>
+        {{end}}
+    </div>
+
+    <!-- All Articles (if more than recent count) -->
+    {{if gt (len .Articles) .RecentCount}}
+    <section class="card all-articles" id="all-articles">
+        <h2>All Articles</h2>
+        <table class="articles-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th>Platform</th>
+                    <th>Sentiment</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Articles}}
+                <tr>
+                    <td>{{formatDate .Meta.ArticleDate}}</td>
+                    <td><a href="{{$.BaseURL}}/articles/{{articleSlug .}}.html">{{.Article.Title}}</a></td>
+                    <td><span class="platform-badge {{lower (printf "%s" .Meta.Platform)}}">{{platformIcon .Meta.Platform}}</span></td>
+                    <td><span class="badge {{sentimentClass .Article.Sentiment}}">{{.Article.Sentiment}}</span></td>
+                    <td>{{.Meta.DiscussionCommentCount}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </section>
+    {{end}}
+</div>
+    </main>
+
+    <footer class="footer">
+        <p>Generated by <a href="https://github.com/grokify/socialpulse">SocialPulse</a> on {{formatDateTime .GeneratedAt}}</p>
+    </footer>
+
+    <script src="{{.BaseURL}}/js/charts.js"></script>
+</body>
+</html>
+{{end}}
