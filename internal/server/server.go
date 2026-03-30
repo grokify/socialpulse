@@ -201,10 +201,22 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Serve from output directory
-	filePath := filepath.Join(s.outputDir, filepath.Clean(path))
+	cleanPath := filepath.Clean(path)
+
+	// Resolve and validate that the requested path stays within the output directory
+	absOutputDir, err := filepath.Abs(s.outputDir)
+	if err != nil {
+		http.Error(w, "Invalid server configuration", http.StatusInternalServerError)
+		return
+	}
+	absFilePath, err := filepath.Abs(filepath.Join(absOutputDir, cleanPath))
+	if err != nil || !strings.HasPrefix(absFilePath, absOutputDir+string(os.PathSeparator)) && absFilePath != absOutputDir {
+		http.NotFound(w, r)
+		return
+	}
 
 	// Check if file exists
-	info, err := os.Stat(filePath)
+	info, err := os.Stat(absFilePath)
 	if err != nil {
 		http.NotFound(w, r)
 		return
@@ -212,12 +224,12 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) {
 
 	// If directory, serve index.html
 	if info.IsDir() {
-		filePath = filepath.Join(filePath, "index.html")
+		absFilePath = filepath.Join(absFilePath, "index.html")
 	}
 
 	// For HTML files, inject live reload script
-	if strings.HasSuffix(filePath, ".html") {
-		content, err := os.ReadFile(filePath)
+	if strings.HasSuffix(absFilePath, ".html") {
+		content, err := os.ReadFile(absFilePath)
 		if err != nil {
 			http.Error(w, "Failed to read file", http.StatusInternalServerError)
 			return
@@ -244,7 +256,7 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Serve other files normally
-	http.ServeFile(w, r, filePath)
+	http.ServeFile(w, r, absFilePath)
 }
 
 // SSE connections for live reload
