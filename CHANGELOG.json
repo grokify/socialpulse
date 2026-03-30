@@ -1,0 +1,49 @@
+{
+  "irVersion": "1.0",
+  "project": "socialpulse",
+  "repository": "https://github.com/grokify/socialpulse",
+  "versioning": "semver",
+  "commitConvention": "conventional",
+  "maintainers": ["grokify"],
+  "releases": [
+    {
+      "version": "v0.1.0",
+      "date": "2026-03-30",
+      "highlights": [
+        { "description": "MkDocs-like static site generator for article discussion summaries with persona analysis and sentiment tracking" },
+        { "description": "Anti-hallucination verification tools to validate quotes and URLs against platform APIs" }
+      ],
+      "added": [
+        { "description": "Core types for discussion summaries: `Summary`, `Persona`, `Quote`, `Digest`, `Site`", "commit": "a2a9600" },
+        { "description": "JSON schema generation from Go types with embedded validation", "commit": "055db7f" },
+        { "description": "`textutil` package for HTML stripping, quote removal, keyword extraction, and text scoring", "commit": "88c8ee7" },
+        { "description": "Static site builder with data dashboard theme and ECharts visualizations", "commit": "506fa0c" },
+        { "description": "CLI commands: `new`, `serve`, `build`, `validate`, `verify`, `fetch-quotes`, `gh-deploy`", "commit": "0fdfa05" },
+        { "description": "Development server with live reload via file watching", "commit": "0fdfa05" },
+        { "description": "HackerNews API integration for URL and quote verification", "commit": "0fdfa05" },
+        { "description": "Persona matching algorithm using keyword analysis", "commit": "0fdfa05" }
+      ],
+      "fixed": [
+        { "description": "Resolve golangci-lint errors: errcheck, gosec, dupl", "commit": "9b45f0e" }
+      ],
+      "tests": [
+        { "description": "Example summary content for validation testing", "commit": "8328942" },
+        { "description": "Comprehensive textutil tests for HTML stripping and keyword extraction", "commit": "88c8ee7" }
+      ],
+      "documentation": [
+        { "description": "Project README with installation, quick start, and CLI reference", "commit": "ccc30f3" },
+        { "description": "MkDocs documentation site with Material theme", "commit": "315d991" },
+        { "description": "CLI command documentation for all 7 commands", "commit": "315d991" },
+        { "description": "Content authoring guide and schema reference", "commit": "315d991" }
+      ],
+      "infrastructure": [
+        { "description": "Project configuration with MIT license", "commit": "bdffc58" },
+        { "description": "GitHub Actions workflows for CI, linting, and SAST", "commit": "bdffc58" },
+        { "description": "Gitignore for generated site output and binaries", "commit": "6c20e7a" }
+      ],
+      "dependencies": [
+        { "description": "Bump grokify/.github workflows to v0.3.0", "commit": "802a68e" }
+      ]
+    }
+  ]
+}
