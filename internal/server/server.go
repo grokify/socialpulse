@@ -87,8 +87,9 @@ func (s *Server) Start() error {
 
 	addr := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
 	s.httpServer = &http.Server{
-		Addr:    addr,
-		Handler: mux,
+		Addr:              addr,
+		Handler:           mux,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 
 	// Handle graceful shutdown
@@ -100,7 +101,9 @@ func (s *Server) Start() error {
 		log.Println("\nShutting down...")
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		s.httpServer.Shutdown(ctx)
+		if err := s.httpServer.Shutdown(ctx); err != nil {
+			log.Printf("Error during shutdown: %v", err)
+		}
 	}()
 
 	return s.httpServer.ListenAndServe()
@@ -234,7 +237,9 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) {
 		modified := strings.Replace(string(content), "</body>", liveReloadScript+"</body>", 1)
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(modified))
+		if _, err := w.Write([]byte(modified)); err != nil { //nolint:gosec // G705: content is from controlled site files
+			log.Printf("Error writing response: %v", err)
+		}
 		return
 	}
 

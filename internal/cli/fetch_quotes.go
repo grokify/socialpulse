@@ -238,5 +238,5 @@ func writeSummaryFile(filePath string, summary *types.Summary) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filePath, data, 0644)
+	return os.WriteFile(filePath, data, 0644) //nolint:gosec // G306: content files need 0644
 }

@@ -133,7 +133,7 @@ func runGHDeploy(cmd *cobra.Command, args []string) error {
 
 	// Add .nojekyll file for GitHub Pages
 	nojekyllPath := filepath.Join(repoRoot, ".nojekyll")
-	if err := os.WriteFile(nojekyllPath, []byte{}, 0644); err != nil {
+	if err := os.WriteFile(nojekyllPath, []byte{}, 0644); err != nil { //nolint:gosec // G306: public web file
 		return fmt.Errorf("failed to create .nojekyll: %w", err)
 	}
 
@@ -207,7 +207,7 @@ func copyDir(src, dst string) error {
 			if err != nil {
 				return err
 			}
-			if err := os.WriteFile(dstPath, data, 0644); err != nil {
+			if err := os.WriteFile(dstPath, data, 0644); err != nil { //nolint:gosec // G306: public web files
 				return err
 			}
 		}

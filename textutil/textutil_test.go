@@ -224,6 +224,7 @@ func TestWordSimilarity(t *testing.T) {
 	}
 }
 
+//nolint:dupl // test table structure is intentionally similar
 func TestTruncate(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -273,6 +274,7 @@ func TestTruncate(t *testing.T) {
 	}
 }
 
+//nolint:dupl // test table structure is intentionally similar
 func TestTruncateAtSentence(t *testing.T) {
 	tests := []struct {
 		name     string

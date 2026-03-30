@@ -60,7 +60,7 @@ build:
 `, siteName)
 
 	configPath := filepath.Join(siteName, "socialpulse.yaml")
-	if err := os.WriteFile(configPath, []byte(configContent), 0644); err != nil {
+	if err := os.WriteFile(configPath, []byte(configContent), 0644); err != nil { //nolint:gosec // G306: config file needs 0644
 		return fmt.Errorf("failed to create config file: %w", err)
 	}
 
@@ -73,7 +73,7 @@ site/
 Thumbs.db
 `
 	gitignorePath := filepath.Join(siteName, ".gitignore")
-	if err := os.WriteFile(gitignorePath, []byte(gitignoreContent), 0644); err != nil {
+	if err := os.WriteFile(gitignorePath, []byte(gitignoreContent), 0644); err != nil { //nolint:gosec // G306: gitignore needs 0644
 		return fmt.Errorf("failed to create .gitignore: %w", err)
 	}
 
@@ -116,7 +116,7 @@ discussion:
     - "How will this affect the broader industry?"
 `
 	examplePath := filepath.Join(siteName, "content/summaries/example.yaml")
-	if err := os.WriteFile(examplePath, []byte(exampleSummary), 0644); err != nil {
+	if err := os.WriteFile(examplePath, []byte(exampleSummary), 0644); err != nil { //nolint:gosec // G306: content files need 0644
 		return fmt.Errorf("failed to create example summary: %w", err)
 	}
 

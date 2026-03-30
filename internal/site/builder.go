@@ -136,10 +136,15 @@ func (b *Builder) Build() (*BuildResult, error) {
 	}, nil
 }
 
-func (b *Builder) loadSummaries() ([]types.Summary, error) {
-	var summaries []types.Summary
+// loadContentFiles walks a directory and loads YAML/JSON files using the provided parser.
+func loadContentFiles[T any](dir string, parser func(path string, data []byte) (T, error)) ([]T, error) {
+	var items []T
 
-	err := filepath.Walk(b.config.SummariesDir, func(path string, info os.FileInfo, err error) error {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		return items, nil
+	}
+
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -152,70 +157,56 @@ func (b *Builder) loadSummaries() ([]types.Summary, error) {
 			return nil
 		}
 
-		data, err := os.ReadFile(path)
+		// Note: path comes from filepath.Walk which is trusted input
+		data, err := os.ReadFile(path) //nolint:gosec // G304: path is from controlled directory walk
 		if err != nil {
 			return fmt.Errorf("failed to read %s: %w", path, err)
 		}
 
+		item, err := parser(path, data)
+		if err != nil {
+			return err
+		}
+
+		items = append(items, item)
+		return nil
+	})
+
+	return items, err
+}
+
+func (b *Builder) loadSummaries() ([]types.Summary, error) {
+	return loadContentFiles(b.config.SummariesDir, func(path string, data []byte) (types.Summary, error) {
 		var summary types.Summary
+		ext := strings.ToLower(filepath.Ext(path))
 		if ext == ".yaml" || ext == ".yml" {
 			if err := yaml.Unmarshal(data, &summary); err != nil {
-				return fmt.Errorf("failed to parse %s: %w", path, err)
+				return summary, fmt.Errorf("failed to parse %s: %w", path, err)
 			}
 		} else {
 			if err := json.Unmarshal(data, &summary); err != nil {
-				return fmt.Errorf("failed to parse %s: %w", path, err)
+				return summary, fmt.Errorf("failed to parse %s: %w", path, err)
 			}
 		}
-
-		summaries = append(summaries, summary)
-		return nil
+		return summary, nil
 	})
-
-	return summaries, err
 }
 
 func (b *Builder) loadDigests() ([]types.Digest, error) {
-	var digests []types.Digest
-
-	if _, err := os.Stat(b.config.DigestsDir); os.IsNotExist(err) {
-		return digests, nil
-	}
-
-	err := filepath.Walk(b.config.DigestsDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if info.IsDir() {
-			return nil
-		}
-
-		ext := strings.ToLower(filepath.Ext(path))
-		if ext != ".yaml" && ext != ".yml" && ext != ".json" {
-			return nil
-		}
-
-		data, err := os.ReadFile(path)
-		if err != nil {
-			return fmt.Errorf("failed to read %s: %w", path, err)
-		}
-
+	return loadContentFiles(b.config.DigestsDir, func(path string, data []byte) (types.Digest, error) {
 		var digest types.Digest
+		ext := strings.ToLower(filepath.Ext(path))
 		if ext == ".yaml" || ext == ".yml" {
 			if err := yaml.Unmarshal(data, &digest); err != nil {
-				return fmt.Errorf("failed to parse %s: %w", path, err)
+				return digest, fmt.Errorf("failed to parse %s: %w", path, err)
 			}
 		} else {
 			if err := json.Unmarshal(data, &digest); err != nil {
-				return fmt.Errorf("failed to parse %s: %w", path, err)
+				return digest, fmt.Errorf("failed to parse %s: %w", path, err)
 			}
 		}
-
-		digests = append(digests, digest)
-		return nil
+		return digest, nil
 	})
-
-	return digests, err
 }
 
 func buildTagIndex(summaries []types.Summary) []types.TagIndex {

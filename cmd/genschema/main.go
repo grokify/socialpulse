@@ -59,7 +59,7 @@ func run() error {
 	}
 
 	// Ensure directory exists
-	if err := os.MkdirAll(outputDir, 0755); err != nil {
+	if err := os.MkdirAll(outputDir, 0755); err != nil { //nolint:gosec // G703: outputDir is from controlled CLI args
 		return fmt.Errorf("failed to create directory %s: %w", outputDir, err)
 	}
 
@@ -87,7 +87,7 @@ func generateSchema(cfg schemaConfig, outputDir string) error {
 	}
 
 	outputPath := filepath.Join(outputDir, cfg.Filename)
-	if err := os.WriteFile(outputPath, data, 0644); err != nil {
+	if err := os.WriteFile(outputPath, data, 0644); err != nil { //nolint:gosec // G306: schema files need 0644 for embedding
 		return fmt.Errorf("failed to write schema %s: %w", outputPath, err)
 	}
 

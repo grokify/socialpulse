@@ -52,7 +52,7 @@ func LoadTemplates(themeName string) (*template.Template, error) {
 			return a % b
 		},
 		"seq":      seq,
-		"safeHTML": func(s string) template.HTML { return template.HTML(s) },
+		"safeHTML": func(s string) template.HTML { return template.HTML(s) }, //nolint:gosec // G203: intentional raw HTML for template rendering
 	}
 
 	// For now, only support default theme from embedded files
@@ -122,7 +122,7 @@ func WriteAssets(outputDir string) error {
 		}
 
 		destPath := filepath.Join(destDir, entry.Name())
-		if err := os.WriteFile(destPath, content, 0644); err != nil {
+		if err := os.WriteFile(destPath, content, 0644); err != nil { //nolint:gosec // G306: public web assets need 0644
 			return err
 		}
 	}

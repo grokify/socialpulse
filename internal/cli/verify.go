@@ -490,5 +490,5 @@ func fixSummaryFile(filePath string, discrepancies []Discrepancy) error {
 		}
 	}
 
-	return os.WriteFile(filePath, []byte(content), 0644)
+	return os.WriteFile(filePath, []byte(content), 0644) //nolint:gosec // G306: content files need 0644
 }
