@@ -1,0 +1,74 @@
+site_name: SocialPulse
+site_description: Static site generator for social discussion summaries
+site_url: https://grokify.github.io/socialpulse
+repo_url: https://github.com/grokify/socialpulse
+repo_name: grokify/socialpulse
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - CLI Reference:
+      - Overview: cli/index.md
+      - new: cli/new.md
+      - serve: cli/serve.md
+      - build: cli/build.md
+      - validate: cli/validate.md
+      - verify: cli/verify.md
+      - fetch-quotes: cli/fetch-quotes.md
+      - gh-deploy: cli/gh-deploy.md
+  - Content:
+      - Authoring Guide: content/authoring.md
+      - Schema Reference: content/schema.md
+      - Writing Personas: content/personas.md
+  - Verification: verification.md
+  - Themes: themes/index.md
+  - Deployment: deployment.md
+  - Library Usage: library.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/grokify/socialpulse
