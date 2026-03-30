@@ -1,0 +1,16 @@
+# Generated site output
+site/
+
+# Binaries
+socialpulse
+*.exe
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
