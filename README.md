@@ -29,13 +29,13 @@ SocialPulse is an MkDocs-like static site generator that transforms article disc
 
 ## Features
 
-- **Static Site Generation** - Build fast, searchable HTML from YAML/JSON content
-- **Data Dashboard Theme** - Information-dense layouts with ECharts visualizations
-- **Persona Analysis** - Categorize discussion participants into archetypal viewpoints
-- **Sentiment Tracking** - Track article and discussion sentiment over time
-- **Platform Support** - HackerNews integration with Reddit planned
-- **Anti-Hallucination Verification** - Verify quotes and URLs against platform APIs
-- **Live Development Server** - File watching with automatic rebuild
+- ⚡ **Static Site Generation** - Build fast, searchable HTML from YAML/JSON content
+- 📊 **Data Dashboard Theme** - Information-dense layouts with ECharts visualizations
+- 👥 **Persona Analysis** - Categorize discussion participants into archetypal viewpoints
+- 📈 **Sentiment Tracking** - Track article and discussion sentiment over time
+- 🔌 **Platform Support** - HackerNews integration with Reddit planned
+- ✅ **Anti-Hallucination Verification** - Verify quotes and URLs against platform APIs
+- 🔄 **Live Development Server** - File watching with automatic rebuild
 
 ## Installation
 
