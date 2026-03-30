@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "meta": {
+    "article_url": "https://mariozechner.at/posts/2026-03-25-thoughts-on-slowing-the-fuck-down/",
+    "discussion_url": "https://news.ycombinator.com/item?id=47517539",
+    "article_date": "2026-03-25T00:00:00Z",
+    "summary_date": "2026-03-26T00:00:00Z",
+    "platform": "hackernews",
+    "article_author": "Mario Zechner",
+    "discussion_comment_count": 50,
+    "item_id": "47517539"
+  },
+  "article": {
+    "title": "Thoughts on slowing the fuck down",
+    "thesis": "Coding agents are creating brittle, unmaintainable software because developers delegate too much authority without oversight. The solution is maintaining human agency over architecture while using agents only for scoped, evaluable tasks.",
+    "key_arguments": [
+      "Unlike humans, agents don't learn from mistakes—they repeat errors, causing compounding failures at unsustainable rates.",
+      "Agents trained on industry practices create unnecessarily complex architectures that humans never designed and can't fully understand.",
+      "Software quality is declining: 98% uptime becoming the norm, AWS outages from AI oversight, companies 'agentically coded into a corner.'"
+    ],
+    "examples": [
+      "AWS outage reportedly caused by AI oversight",
+      "Windows quality decline under heavy AI code generation",
+      "Companies describing themselves as 'agentically coded into a corner'"
+    ],
+    "prescription": "Use agents only for scoped, evaluable tasks. Humans must retain control over architecture and critical decisions. Slow down and maintain oversight.",
+    "tags": [
+      "ai-coding-assistants",
+      "software-quality",
+      "engineering-discipline",
+      "technical-debt",
+      "developer-productivity"
+    ],
+    "sentiment": "cautious"
+  },
+  "discussion": {
+    "sentiment": "divided",
+    "personas": [
+      {
+        "name": "The Weary Veteran",
+        "description": "Experienced devs who've seen hype cycles before and are skeptical of transformation claims",
+        "stance": "nuanced",
+        "prevalence": "dominant",
+        "quotes": [
+          {
+            "text": "I'm not even sure building software is an engineering discipline at this point. Maybe it never was.",
+            "author": "perrygeo"
+          },
+          {
+            "text": "If I engineer a bridge I know the load the bridge is designed to carry.",
+            "author": "dstroot"
+          }
+        ],
+        "core_argument": "Software has never achieved true engineering rigor; AI tools don't change fundamental discipline problems that have existed for decades."
+      },
+      {
+        "name": "The Democratization Believer",
+        "description": "Sees AI as empowering non-programmers to create software",
+        "stance": "disagrees",
+        "prevalence": "significant",
+        "quotes": [
+          {
+            "text": "Artists and non-programmers can now create sophisticated digital tools previously requiring coding knowledge.",
+            "author": "HeWhoLurksLate"
+          },
+          {
+            "text": "AI pushes focus from 'building software' to 'solving problems,' benefiting problem-solvers.",
+            "author": "crystal_revenge"
+          }
+        ],
+        "core_argument": "AI democratizes creation—people who understand problems can now build solutions without deep coding expertise."
+      },
+      {
+        "name": "The Skeptical Realist",
+        "description": "Questions whether AI-built software is actually good or sustainable",
+        "stance": "agrees",
+        "prevalence": "significant",
+        "quotes": [
+          {
+            "text": "Where are the actually *good* applications built by non-experts? Sees only 'parlor tricks' rather than innovative creations.",
+            "author": "Forgeties79"
+          },
+          {
+            "text": "Questions sustainability of $20/month AI pricing given industry's ongoing financial losses.",
+            "author": "foobarchu"
+          }
+        ],
+        "core_argument": "Show me the actually good software built this way. Current examples are demos, not production systems. Economics don't support current pricing."
+      },
+      {
+        "name": "The Systems Thinker",
+        "description": "Focuses on complexity, abstraction layers, and systemic fragility",
+        "stance": "agrees",
+        "prevalence": "minority",
+        "quotes": [
+          {
+            "text": "stacking turtles",
+            "author": "zer00eyz",
+            "context": "Critiquing abstraction layers"
+          },
+          {
+            "text": "Complexity creates inevitable failures; questions whether adding AI to fragile systems helps.",
+            "author": "PaulHoule",
+            "context": "Referencing Perrow's Normal Accidents"
+          }
+        ],
+        "core_argument": "Modern software stacks are already dangerously complex. AI adds another layer of opacity to systems we barely understand."
+      },
+      {
+        "name": "The Capitalist Critic",
+        "description": "Attributes problems to market incentives rather than technology",
+        "stance": "tangential",
+        "prevalence": "minority",
+        "quotes": [
+          {
+            "text": "It's almost as if we lived under capitalism.",
+            "author": "lejalv"
+          },
+          {
+            "text": "Every major company's real product is stock price appreciation; actual products are side quests.",
+            "author": "ryandrake"
+          }
+        ],
+        "core_argument": "The real issue isn't AI or methodology—it's that companies optimize for shareholder value, not software quality."
+      }
+    ],
+    "tangents": [
+      {
+        "topic": "Is software engineering actually engineering?",
+        "summary": "Extended debate comparing software to civil engineering. Key distinction: bridge engineers face lawsuits; software developers ship post-hoc fixes."
+      },
+      {
+        "topic": "Low-hanging fruit exhaustion",
+        "summary": "Most basic software categories (communication, delivery, search) already solved. Current work is incremental improvement or recombination."
+      }
+    ],
+    "consensus_points": [
+      "Software complexity has increased dramatically despite better tooling",
+      "The industry generates significant 'meta-work' that doesn't solve user problems",
+      "Sustainable pace matters more than specific methodology"
+    ],
+    "open_questions": [
+      "Will AI pricing remain viable as losses mount?",
+      "Can vibe-coded software scale beyond personal/small projects?",
+      "Does AI-assisted coding actually change fundamental software quality dynamics?"
+    ]
+  }
+}
